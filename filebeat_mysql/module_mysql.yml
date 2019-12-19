@@ -1,0 +1,16 @@
+- module: mysql
+  # Error logs
+  error:
+    enabled: true
+    var.paths: ["/var/log/mariadb/mariadb.log"]
+    # Set custom paths for the log files. If left empty,
+    # Filebeat will choose the paths depending on your OS.
+    #var.paths:
+
+  # Slow logs
+  slowlog:
+    enabled: true
+    var.paths: ["/var/log/mariadb/slow.log"]
+    # Set custom paths for the log files. If left empty,
+    # Filebeat will choose the paths depending on your OS.
+    #var.paths:

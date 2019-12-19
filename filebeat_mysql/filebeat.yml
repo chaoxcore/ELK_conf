@@ -1,0 +1,19 @@
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: true
+  reload.period: 10s
+
+output.elasticsearch:
+  hosts: ["10.0.0.240:9200"]
+  indices:
+  - index: "mysql-slow-%{[beat.version]}-%{+yyyy.MM}"
+    when.contains:
+      fileset.name: "slowlog"
+  - index: "mysql-err-%{[beat.version]}-%{+yyyy.MM}"
+    when.contains:
+      fileset.name: "error"
+
+setup.template.name: "mysql"
+setup.template.pattern: "mysql-*"
+setup.template.enabled: false
+setup.template.overwrite: true
