@@ -1,0 +1,52 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /var/log/nginx/access.log
+  json.keys_under_root: true
+  json.overwrite_keys: true
+  tags: ["nginx-access"]
+- type: log
+  enabled: true
+  paths:
+    - /var/log/nginx/error.log
+  tags: ["nginx-error"]
+- type: log
+  enabled: true
+  paths:
+    - /opt/tomcat/logs/localhost_access_log.*.txt
+  json.keys_under_root: true
+  json.overwrite_keys: true
+  tags: ["tomcat-access"]
+- type: log
+  enabled: true
+  paths:
+    - /var/log/messages
+  tags: ["es02-messages"]
+- type: log
+  enabled: true
+  paths:
+    - /var/log/secure
+  tags: ["es02-secure"]
+output.elasticsearch:
+  hosts: ["10.0.0.240:9200"]
+  indices:
+  - index: "nginx-access-%{[beat.version]}-%{+yyyy.MM}"
+    when.contains:
+      tags: "nginx-access"
+  - index: "nginx-error-%{[beat.version]}-%{+yyyy.MM}"
+    when.contains:
+      tags: "nginx-error"
+  - index: "tomcat-access-%{[beat.version]}-%{+yyyy.MM}"
+    when.contains:
+      tags: "tomcat-access"
+  - index: "es02-messages-%{[beat.version]}-%{+yyyy.MM}"
+    when.contains:
+      tags: "es02-messages"
+  - index: "es02-secure-%{[beat.version]}-%{+yyyy.MM}"
+    when.contains:
+      tags: "es02-secure"
+setup.template.name: "nginx"
+setup.template.pattern: "nginx-*"
+setup.template.enabled: false
+setup.template.overwrite: true
